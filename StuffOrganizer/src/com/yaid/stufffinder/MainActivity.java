@@ -52,7 +52,6 @@ public class MainActivity extends Activity{
 	
 	final int TYPE_PHOTO = 1;
 	final int REQUEST_CODE_PHOTO = 1;
-	//final String PATH_FOR_PHOTO = "//Find Stuff";
 	final String PATH_FOR_PHOTO = "/Stuff Finder";
 	final String TAG = "myLogs";
 	private File fotoName;

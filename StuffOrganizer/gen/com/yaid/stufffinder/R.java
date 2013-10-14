@@ -42,24 +42,25 @@ public final class R {
         public static final int imageViewGal=0x7f080006;
         public static final int imageViewPhoto=0x7f080005;
         public static final int left_drawer=0x7f080002;
+        public static final int listView1=0x7f080014;
         public static final int menu_settings=0x7f080015;
         public static final int pager=0x7f080001;
         public static final int pagerTabStrip=0x7f080003;
         public static final int tableRow1=0x7f080007;
         public static final int tableRow2=0x7f08000a;
         public static final int tableRow3=0x7f08000d;
-        public static final int textView1=0x7f080014;
-        public static final int textView2=0x7f080012;
         public static final int tvExtras=0x7f08000e;
         public static final int tvLocation=0x7f08000b;
         public static final int tvName=0x7f080008;
-        public static final int tvPage=0x7f080013;
+        public static final int tvTextLocation=0x7f080013;
+        public static final int tvTextName=0x7f080012;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int add_stuff_screen=0x7f030001;
         public static final int drawer_list_item=0x7f030002;
-        public static final int list_stuff_screen=0x7f030003;
+        public static final int item=0x7f030003;
+        public static final int list_stuff_screen=0x7f030004;
     }
     public static final class menu {
         public static final int activity_main=0x7f070000;

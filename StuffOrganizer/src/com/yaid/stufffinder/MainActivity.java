@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.LoaderManager;
 import android.app.SearchManager;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -17,11 +20,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,8 +37,10 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity{
@@ -50,16 +57,24 @@ public class MainActivity extends Activity{
 	ImageView stuffPhoto;
 	Button saveButton;
 	
+	EditText etName;
+	EditText etLocation;
+	EditText etExtras;
+	
+	ListView lvData;
+	
 	final int TYPE_PHOTO = 1;
 	final int REQUEST_CODE_PHOTO = 1;
 	final String PATH_FOR_PHOTO = "/Stuff Finder";
 	final String TAG = "myLogs";
 	private File fotoName;
+	private String fileFotoName = "";
 	
-	private final String PHOTO_IMG = "photoImage";
-	private final String PHOTO_FILE_NAME = "photoFileName";
-	
-    
+	//StuffDBHelper dbHelper;
+	SimpleCursorAdapter scAdapter;
+	Cursor cursor;
+	DBStuffOrganazer db;
+	    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,13 +97,18 @@ public class MainActivity extends Activity{
 	    pager.setAdapter(pagerAdapter);
 	    
 	    saveButton = (Button)pages.get(0).findViewById(R.id.butSave);
-	    saveButton.setOnClickListener(imagePhotoClick);
+	    saveButton.setOnClickListener(saveButClick);
 	    
 	    stuffPhoto = (ImageView)pages.get(0).findViewById(R.id.imageViewPhoto);
         stuffPhoto.setClickable(true);
         stuffPhoto.setOnClickListener(imagePhotoClick);
-	    
-	    
+        
+        etName = (EditText)pages.get(0).findViewById(R.id.etName);
+        etLocation = (EditText)pages.get(0).findViewById(R.id.etLocation);
+        etExtras = (EditText)pages.get(0).findViewById(R.id.etExtras);
+        
+        lvData = (ListView)pages.get(1).findViewById(R.id.listView1);
+                
 	    pager.setOnPageChangeListener(new OnPageChangeListener() {
 			
 			@Override
@@ -147,14 +167,34 @@ public class MainActivity extends Activity{
             selectItem(0);
         }
         
+        db = new DBStuffOrganazer(this);
+        db.open();
+        
+        cursor = db.getAllData();
+        startManagingCursor(cursor);
+        
+        String[] from = new String[]{DBStuffOrganazer.NAME_COL, DBStuffOrganazer.LOCATION_COL};
+        int[] to = new int[] {R.id.tvTextName, R.id.tvTextLocation};
+        
+        scAdapter = new SimpleCursorAdapter(this, R.layout.item, cursor, from, to);
+        lvData.setAdapter(scAdapter);
+        
+    }
+    
+    private void updateListView()
+    {
+    	
     }
     
     OnClickListener saveButClick = new OnClickListener() {
 		
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
 			
+						
+			db.addRec(etName.getText().toString(), etLocation.getText().toString(), etExtras.getText().toString(), fileFotoName);
+			cursor.requery();
+									
 		}
 	};
     
@@ -163,9 +203,9 @@ public class MainActivity extends Activity{
 		
 		@Override
 		public void onClick(View v) {
-			//File file = null;
-	        fotoName = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + PATH_FOR_PHOTO + "/" + "photo_"
-	              + System.currentTimeMillis() + ".jpg");
+			
+			fileFotoName =  "photo_" + System.currentTimeMillis() + ".jpg";
+	        fotoName = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + PATH_FOR_PHOTO + "/" + fileFotoName);
 	    	
 	    	//String sdCardPath = Environment.getExternalStorageDirectory().getAbsolutePath();
 			
@@ -316,17 +356,22 @@ public class MainActivity extends Activity{
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //Bitmap bmp = ((BitmapDrawable)stuffPhoto.getDrawable()).getBitmap();
-        outState.putParcelable(PHOTO_IMG, ((BitmapDrawable)stuffPhoto.getDrawable()).getBitmap());
-        outState.putSerializable(PHOTO_FILE_NAME, fotoName);
+        outState.putParcelable(ConstContainer.PHOTO_IMG, ((BitmapDrawable)stuffPhoto.getDrawable()).getBitmap());
+        outState.putSerializable(ConstContainer.PHOTO_FILE_NAME, fotoName);
+        outState.putString(ConstContainer.EDITTEXT_NAME, etName.getText().toString());
+        outState.putString(ConstContainer.EDITTEXT_LOCATION, etLocation.getText().toString());
+        outState.putString(ConstContainer.EDITTEXT_EXTRAS, etExtras.getText().toString());
         //Log.d(LOG_TAG, "onSaveInstanceState");
       }
     
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         //cnt = savedInstanceState.getInt("count");
-        stuffPhoto.setImageBitmap((Bitmap)savedInstanceState.getParcelable(PHOTO_IMG));
-        fotoName = (File)savedInstanceState.getSerializable(PHOTO_FILE_NAME);
-        
+        stuffPhoto.setImageBitmap((Bitmap)savedInstanceState.getParcelable(ConstContainer.PHOTO_IMG));
+        fotoName = (File)savedInstanceState.getSerializable(ConstContainer.PHOTO_FILE_NAME);
+        etName.setText((String)savedInstanceState.getString(ConstContainer.EDITTEXT_NAME));
+        etLocation.setText((String)savedInstanceState.getString(ConstContainer.EDITTEXT_LOCATION));
+        etExtras.setText((String)savedInstanceState.getString(ConstContainer.EDITTEXT_EXTRAS));
         //Log.d(LOG_TAG, "onRestoreInstanceState");
       }
 		

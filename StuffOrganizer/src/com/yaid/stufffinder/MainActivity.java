@@ -28,11 +28,13 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -42,6 +44,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class MainActivity extends Activity{
     private DrawerLayout mDrawerLayout;
@@ -63,6 +66,7 @@ public class MainActivity extends Activity{
 	
 	ListView lvData;
 	
+	private static final int CM_DELETE_ID = 1;
 	final int TYPE_PHOTO = 1;
 	final int REQUEST_CODE_PHOTO = 1;
 	final String PATH_FOR_PHOTO = "/Stuff Finder";
@@ -171,13 +175,36 @@ public class MainActivity extends Activity{
         db.open();
         
         cursor = db.getAllData();
+        /*
+        scAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+			
+			@Override
+			public boolean setViewValue(View arg0, Cursor arg1, int arg2) {
+				if(arg0.getId() == R.id.ivThumb)
+				{
+					String fileName = Environment.getExternalStorageDirectory().getAbsolutePath() + PATH_FOR_PHOTO + "/" + arg1.getString(arg2);
+					//((ImageView)arg0).setImageBitmap(ImageProcessing.loadAndResizeBitmap(fileName, 64, 64, true));
+					((ImageView)arg0).setImageURI(Uri.parse(fileName));
+					return true;
+				}
+				return false;
+			}
+		});
+        */
         startManagingCursor(cursor);
         
+        //String[] from = new String[]{DBStuffOrganazer.NAME_COL, DBStuffOrganazer.LOCATION_COL, DBStuffOrganazer.FILE_NAME_COL};
         String[] from = new String[]{DBStuffOrganazer.NAME_COL, DBStuffOrganazer.LOCATION_COL};
+        //int[] to = new int[] {R.id.tvTextName, R.id.tvTextLocation, R.id.ivThumb};
         int[] to = new int[] {R.id.tvTextName, R.id.tvTextLocation};
         
         scAdapter = new SimpleCursorAdapter(this, R.layout.item, cursor, from, to);
         lvData.setAdapter(scAdapter);
+        
+     // добавляем контекстное меню к списку
+	    registerForContextMenu(lvData);
+        
+        //stuffPhoto.setImageBitmap(ImageProcessing.bitmapResize(mBitmap, ivHeigth, ivWidth, true));
         
     }
     
@@ -208,6 +235,8 @@ public class MainActivity extends Activity{
 	        fotoName = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + PATH_FOR_PHOTO + "/" + fileFotoName);
 	    	
 	    	//String sdCardPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+	        
+	        // stt
 			
 			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 	        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(fotoName));
@@ -374,6 +403,31 @@ public class MainActivity extends Activity{
         etExtras.setText((String)savedInstanceState.getString(ConstContainer.EDITTEXT_EXTRAS));
         //Log.d(LOG_TAG, "onRestoreInstanceState");
       }
+    
+    public void onCreateContextMenu(ContextMenu menu, View v,
+  	      ContextMenuInfo menuInfo) {
+  	    super.onCreateContextMenu(menu, v, menuInfo);
+  	    menu.add(0, CM_DELETE_ID, 0, R.string.delete_record);
+  	  }
+  	  
+  	  public boolean onContextItemSelected(MenuItem item) {
+  	    if (item.getItemId() == CM_DELETE_ID) {
+  	      // получаем из пункта контекстного меню данные по пункту списка 
+  	      AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
+  	      // извлекаем id записи и удаляем соответствующую запись в БД
+  	      db.delRec(acmi.id);
+  	      // обновляем курсор
+  	      cursor.requery();
+  	      return true;
+  	    }
+  	    return super.onContextItemSelected(item);
+  	  }
+  	  
+  	  protected void onDestroy() {
+  	    super.onDestroy();
+  	    // закрываем подключение при выходе
+  	    db.close();
+  	  }
 		
     
 }

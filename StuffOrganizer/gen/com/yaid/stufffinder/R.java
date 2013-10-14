@@ -31,8 +31,8 @@ public final class R {
     }
     public static final class id {
         public static final int RelativeLayout1=0x7f080004;
-        public static final int action_settings=0x7f080017;
-        public static final int action_websearch=0x7f080016;
+        public static final int action_settings=0x7f080018;
+        public static final int action_websearch=0x7f080017;
         public static final int butSave=0x7f080010;
         public static final int button2=0x7f080011;
         public static final int drawer_layout=0x7f080000;
@@ -41,9 +41,10 @@ public final class R {
         public static final int etName=0x7f080009;
         public static final int imageViewGal=0x7f080006;
         public static final int imageViewPhoto=0x7f080005;
+        public static final int ivThumb=0x7f080014;
         public static final int left_drawer=0x7f080002;
-        public static final int listView1=0x7f080014;
-        public static final int menu_settings=0x7f080015;
+        public static final int listView1=0x7f080015;
+        public static final int menu_settings=0x7f080016;
         public static final int pager=0x7f080001;
         public static final int pagerTabStrip=0x7f080003;
         public static final int tableRow1=0x7f080007;
@@ -70,6 +71,7 @@ public final class R {
         public static final int action_websearch=0x7f040004;
         public static final int app_name=0x7f040000;
         public static final int app_not_available=0x7f040006;
+        public static final int delete_record=0x7f040007;
         public static final int drawer_close=0x7f040003;
         public static final int drawer_open=0x7f040002;
         public static final int menu_settings=0x7f040001;

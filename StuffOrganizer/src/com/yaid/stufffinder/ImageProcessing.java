@@ -79,5 +79,21 @@ public class ImageProcessing {
 	    // "RECREATE" THE NEW BITMAP
 	    return Bitmap.createBitmap(bmpIn, 0, 0, oldWidth, oldHeight, matrix, false);		
 	}
+	
+	static public Bitmap loadAndResizeBitmap(String path, int heigth, int width, boolean proportionLock)
+	{
+		File imageName = new File(path);
+		if(!imageName.exists())
+			return null;
+		
+		if (heigth == 0 || width == 0)
+			return null;
+		
+		Bitmap mBitmap = BitmapFactory.decodeFile(imageName.getAbsolutePath());
+		
+	    return bitmapResize(mBitmap, heigth, width, proportionLock);
+		
+		
+	}
 
 }

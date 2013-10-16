@@ -1,6 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/RelativeLayout1"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scrollView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+<LinearLayout 
+    android:id="@+id/LinLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal" >
@@ -16,7 +20,7 @@
              android:layout_height="180dp"
              android:clickable="true"
              android:scaleType="fitCenter"
-             android:src="@drawable/ic_launcher" />
+             android:src="@drawable/camera_icon" />
     
      <ImageView
         android:id="@+id/imageViewGal"
@@ -29,72 +33,38 @@
     </LinearLayout>
 
 <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >
-
-   <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TableRow
-            android:id="@+id/tableRow1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-            
-            <TextView
-        android:id="@+id/tvName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-
-            <EditText
+     
+    <EditText
                 android:id="@+id/etName"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:ems="10" >
+                android:ems="10"
+                android:singleLine="true"
+                android:hint="Name..." >
             </EditText>
             
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/tableRow2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-            
-             <TextView
-        android:id="@+id/tvLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-             
-             <EditText
+     <EditText
                 android:id="@+id/etLocation"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:ems="10" >
+                android:ems="10" 
+                android:singleLine="true"
+                android:hint="Location..." >
             </EditText>
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/tableRow3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
             
-            <TextView
-        android:id="@+id/tvExtras"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Large Text" />
-            
-            <EditText
+     <EditText
                 android:id="@+id/etExtras"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:ems="10" >
+                android:ems="10"
+                android:singleLine="true"
+                android:hint="Extras..." >
             </EditText>
-        </TableRow>
-    </TableLayout>
+
+   
 
    <LinearLayout
         android:layout_width="match_parent"
@@ -121,3 +91,5 @@
     </LinearLayout>
    
 </LinearLayout>
+
+</ScrollView>

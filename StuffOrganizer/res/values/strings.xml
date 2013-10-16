@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Stuff Finder</string>
+    <string name="app_name">Stuff Organazer</string>
     <string name="menu_settings">Settings</string>
     
     <string-array name="screens_array">

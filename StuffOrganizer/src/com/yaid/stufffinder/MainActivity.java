@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.yaid.helpers.ConstContainer;
-import com.yaid.helpers.FileUtils;
 import com.yaid.helpers.ImageProcessing;
 
 import android.app.Activity;

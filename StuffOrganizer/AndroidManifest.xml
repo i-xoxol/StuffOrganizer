@@ -14,10 +14,11 @@
     <application
         android:allowBackup="true"
         android:debuggable="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/iconfindstufftrue"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name="com.yaid.stufffinder.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>

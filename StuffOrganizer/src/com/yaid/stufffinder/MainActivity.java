@@ -1,8 +1,18 @@
 package com.yaid.stufffinder;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.yaid.helpers.ConstContainer;
+import com.yaid.helpers.FileUtils;
+import com.yaid.helpers.ImageProcessing;
 
 import android.app.Activity;
 import android.app.LoaderManager;
@@ -14,6 +24,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +40,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,7 +59,10 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class MainActivity extends Activity{
-    private DrawerLayout mDrawerLayout;
+    
+	public static String DB_FILEPATH = "/data/data/com.yaid.stufffinder/databases/stuffOrganazerDB";
+	
+	private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -59,6 +74,7 @@ public class MainActivity extends Activity{
 	PagerAdapter pagerAdapter;
 	ImageView stuffPhoto;
 	Button saveButton;
+	Button but2;
 	
 	EditText etName;
 	EditText etLocation;
@@ -75,7 +91,8 @@ public class MainActivity extends Activity{
 	private String fileFotoName = "";
 	
 	//StuffDBHelper dbHelper;
-	SimpleCursorAdapter scAdapter;
+	//SimpleCursorAdapter scAdapter;
+	SFCursorAdapter scAdapter;
 	Cursor cursor;
 	DBStuffOrganazer db;
 	    
@@ -102,6 +119,9 @@ public class MainActivity extends Activity{
 	    
 	    saveButton = (Button)pages.get(0).findViewById(R.id.butSave);
 	    saveButton.setOnClickListener(saveButClick);
+	    
+	    but2 = (Button)pages.get(0).findViewById(R.id.button2);
+	    but2.setOnClickListener(but2Click);
 	    
 	    stuffPhoto = (ImageView)pages.get(0).findViewById(R.id.imageViewPhoto);
         stuffPhoto.setClickable(true);
@@ -191,14 +211,23 @@ public class MainActivity extends Activity{
 			}
 		});
         */
-        startManagingCursor(cursor);
+ //       startManagingCursor(cursor);
         
         //String[] from = new String[]{DBStuffOrganazer.NAME_COL, DBStuffOrganazer.LOCATION_COL, DBStuffOrganazer.FILE_NAME_COL};
         String[] from = new String[]{DBStuffOrganazer.NAME_COL, DBStuffOrganazer.LOCATION_COL};
         //int[] to = new int[] {R.id.tvTextName, R.id.tvTextLocation, R.id.ivThumb};
         int[] to = new int[] {R.id.tvTextName, R.id.tvTextLocation};
         
-        scAdapter = new SimpleCursorAdapter(this, R.layout.item, cursor, from, to);
+        //scAdapter = new SimpleCursorAdapter(this, R.layout.item, cursor, from, to);
+        scAdapter = new SFCursorAdapter(this, cursor, true);
+        
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screen_width = size.x;
+        
+        scAdapter.setThumbSize(screen_width/5);
+        
         lvData.setAdapter(scAdapter);
         
      // добавляем контекстное меню к списку
@@ -208,12 +237,7 @@ public class MainActivity extends Activity{
         
     }
     
-    private void updateListView()
-    {
-    	
-    }
-    
-    OnClickListener saveButClick = new OnClickListener() {
+   OnClickListener saveButClick = new OnClickListener() {
 		
 		@Override
 		public void onClick(View v) {
@@ -222,6 +246,78 @@ public class MainActivity extends Activity{
 			db.addRec(etName.getText().toString(), etLocation.getText().toString(), etExtras.getText().toString(), fileFotoName);
 			cursor.requery();
 									
+		}
+	};
+	
+	OnClickListener but2Click = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			
+						
+			// Close the SQLiteOpenHelper so it will commit the created empty
+		    // database to internal storage.
+			db.close();
+			String packName = getApplicationContext().getPackageName();
+	//Import backUp		
+			try {
+                File sd = Environment.getExternalStorageDirectory();
+                File data  = Environment.getDataDirectory();
+
+                if (sd.canWrite()) {
+                    String  currentDBPath= "//data//" + packName
+                            + "//databases//" + "stuffOrganazerDB";
+                    String backupDBPath  = PATH_FOR_PHOTO + "/DatabaseName";
+                    File  backupDB= new File(data, currentDBPath);
+                    File currentDB  = new File(sd, backupDBPath);
+
+                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+                    Toast.makeText(getBaseContext(), backupDB.toString(),
+                            Toast.LENGTH_LONG).show();
+
+                }
+            } catch (Exception e) {
+
+                Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG)
+                        .show();
+
+            }
+			
+	/*	  //Export BackUp 
+			try {
+                File sd = Environment.getExternalStorageDirectory();
+                File data = Environment.getDataDirectory();
+
+                if (sd.canWrite()) {
+                    String  currentDBPath= "//data//" + packName
+                            + "//databases//" + "stuffOrganazerDB";
+                    String backupDBPath  = PATH_FOR_PHOTO + "/DatabaseName";
+                    File currentDB = new File(data, currentDBPath);
+                    File backupDB = new File(sd, backupDBPath);
+                    
+                    if (!backupDB.exists())
+                    	backupDB.createNewFile();
+
+                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+                    Toast.makeText(getBaseContext(), backupDB.toString(),
+                            Toast.LENGTH_LONG).show();
+
+                }
+            } catch (Exception e) {
+
+                Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG)
+                        .show();
+            }
+            
+		*/							
 		}
 	};
     

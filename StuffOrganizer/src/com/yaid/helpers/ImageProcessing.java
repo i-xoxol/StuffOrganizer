@@ -1,4 +1,4 @@
-package com.yaid.stufffinder;
+package com.yaid.helpers;
 
 import java.io.File;
 import java.io.FileNotFoundException;

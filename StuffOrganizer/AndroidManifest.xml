@@ -17,6 +17,9 @@
         android:icon="@drawable/iconfindstufftrue"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="com.google.android.backup.api_key"
+            android:value="AEdPqrEAAAAIXpUU9e9icz9QH-2e2TtYeX0eihXtYygr1ErCSg" />
         <activity
             android:windowSoftInputMode="adjustResize"
             android:name="com.yaid.stufffinder.MainActivity"
@@ -27,6 +30,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+        	android:name="com.yaid.stufffinder.ItemShowActivity">
+        </activity>
+        
+        <activity
+        	android:name="com.yaid.stufffinder.ItemShowWithFragmentsActivity">
+        </activity>
+        
+        <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name="com.yaid.stufffinder.DateTimeActivity"
+            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar">
+            </activity>
     </application>
 
 </manifest>

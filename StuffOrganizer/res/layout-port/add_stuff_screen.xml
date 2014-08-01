@@ -11,19 +11,20 @@
 
     <ImageView
         android:id="@+id/imageViewPhoto"
-        android:layout_width="240dp"
-        android:layout_height="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
         android:layout_gravity="center"
         android:clickable="true"
+        android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:src="@drawable/camera_icon" />
     
-    <ImageView
+    <ImageButton
         android:id="@+id/imageViewGal"
         android:layout_width="240dp"
         android:layout_height="80dp"
         android:layout_gravity="center"
-        android:scaleType="fitCenter"
+        android:scaleType="fitXY"
         android:src="@drawable/addgal" />
     
     <EditText
@@ -56,8 +57,16 @@
                 android:hint="Extras..."
                 android:ems="10" >
             </EditText>
-
+            
+    <Button
+            android:id="@+id/dateTimeBut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical|center_horizontal|left"
+            android:text="Choose date / time" />
     
+        
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" 

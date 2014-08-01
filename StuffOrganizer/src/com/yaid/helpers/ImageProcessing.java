@@ -15,6 +15,7 @@ public class ImageProcessing {
 	final public static int FILE_DOESNT_EXIST = 1;
 	final public static int IO_ERROR = 2;
 	final public static int SIZE_ERROR = 3;
+	final public static int FILE_PATH_NULL = 4;
 	
 	static public int resizeImage(String path, int heigth, int width, boolean proportionLock){
 		
@@ -38,6 +39,40 @@ public class ImageProcessing {
 		try {
 			FileOutputStream out = null;
 			out = new FileOutputStream(imageName.getAbsolutePath());
+			if (out != null)
+				{
+				resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+					return IO_ERROR;
+					}
+				}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return FILE_DOESNT_EXIST;
+		}
+		
+		return RES_OK;
+	}
+	
+	static public int resizeBitmapAndSave(File imagePathToSave, Bitmap mBitmap, int heigth, int width, boolean proportionLock){
+		
+		//File imageName = new File(path);
+		if(imagePathToSave == null)
+			return FILE_PATH_NULL;
+		
+		if (heigth == 0 || width == 0)
+			return SIZE_ERROR;
+		
+		//Bitmap mBitmap = BitmapFactory.decodeFile(imageName.getAbsolutePath());
+		
+	    Bitmap resizedBitmap = bitmapResize(mBitmap, heigth, width, proportionLock);
+	    
+		try {
+			FileOutputStream out = null;
+			out = new FileOutputStream(imagePathToSave.getAbsolutePath());
 			if (out != null)
 				{
 				resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
@@ -92,7 +127,12 @@ public class ImageProcessing {
 		Bitmap mBitmap = BitmapFactory.decodeFile(imageName.getAbsolutePath());
 		
 	    return bitmapResize(mBitmap, heigth, width, proportionLock);
-		
+	}
+	
+	static public boolean deleteImageFile(String path)
+	{
+		File file = new File(path);
+		return file.delete();
 		
 	}
 

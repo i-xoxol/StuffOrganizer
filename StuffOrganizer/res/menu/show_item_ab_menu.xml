@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item android:id="@+id/action_edit"
+          android:icon="@drawable/ic_action_edit"
+          android:title="@string/edit_record"
+          android:showAsAction="ifRoom|collapseActionView"/>  
+           
+    <item android:id="@+id/action_delete"
+          android:icon="@drawable/ic_action_discard"
+          android:title="@string/delete_record"
+          android:showAsAction="ifRoom|collapseActionView"/>
+    
+    <item android:id="@+id/action_apply"
+          android:icon="@drawable/ic_action_accept"
+          android:title="@string/apply_record"
+          android:showAsAction="ifRoom|collapseActionView"/>     
+
+</menu>

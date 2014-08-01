@@ -3,6 +3,7 @@ package com.yaid.stufffinder;
 import java.util.HashMap;
 import java.util.Queue;
 
+import com.yaid.helpers.DateConversion;
 import com.yaid.helpers.ImageProcessing;
 import com.yaid.helpers.ItemForPQueue;
 
@@ -32,6 +33,7 @@ public class SFCursorAdapter extends CursorAdapter{
     private Queue<ItemForPQueue> timeQueue = new PriorityQueue<ItemForPQueue>();
     private long timeReq = 0;
     private String minKey = "";
+    private int recordID = 0;
 
 	public SFCursorAdapter(Context context, Cursor c, boolean autoRequery) {
 		super(context, c, autoRequery);
@@ -52,8 +54,13 @@ public class SFCursorAdapter extends CursorAdapter{
 		String name = c.getString(c.getColumnIndexOrThrow(DBStuffOrganazer.NAME_COL));
 		String location = c.getString(c.getColumnIndexOrThrow(DBStuffOrganazer.LOCATION_COL));
 		String imagePath = Environment.getExternalStorageDirectory().getAbsolutePath() + PATH_FOR_PHOTO + "/" +  c.getString(c.getColumnIndexOrThrow(DBStuffOrganazer.FILE_NAME_COL));
-		
+		String date = DateConversion.getDateFromSeconds(c.getInt(c.getColumnIndexOrThrow(DBStuffOrganazer.DATE_COL)),"yyyy-MM-dd");
+		recordID = c.getInt(c.getColumnIndexOrThrow(DBStuffOrganazer.COLUMN_ID));
 		timeReq = System.currentTimeMillis();
+		
+		TextView date_text = (TextView)v.findViewById(R.id.tvTextDate);
+		if (date_text != null)
+			date_text.setText(date);
 		
 		TextView name_text = (TextView)v.findViewById(R.id.tvTextName);
 		if (name_text != null)
@@ -103,6 +110,10 @@ public class SFCursorAdapter extends CursorAdapter{
 		if (bm != null)
 			item_image.setImageBitmap(bm);
 		
+	}
+	
+	public int getId(){
+		return recordID;
 	}
 
 	@Override
